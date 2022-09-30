@@ -2,6 +2,7 @@ package domaci026.tests;
 
 import domaci026.pages.AddOnePage;
 import domaci026.pages.CheckoutAndBay;
+import domaci026.pages.InfoPage;
 import domaci026.pages.LoginPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -20,6 +21,7 @@ public class SwagLabsTest {
     private LoginPage loginPage;
     private AddOnePage addOnePage;
     private CheckoutAndBay checkoutAndBay;
+    private InfoPage infoPage;
 
     @BeforeClass
     public void setup(){
@@ -31,6 +33,8 @@ public class SwagLabsTest {
         loginPage = new LoginPage(driver,driverWait);
         addOnePage = new AddOnePage(driver,driverWait);
         checkoutAndBay = new CheckoutAndBay(driver,driverWait);
+        infoPage = new InfoPage(driver,driverWait);
+
         driver.get("https://www.saucedemo.com");
     }
 
@@ -41,7 +45,7 @@ public class SwagLabsTest {
     @AfterClass
     public void afterC(){
 
-        driver.quit();
+       // driver.quit();
     }
 
     @Test (priority = 1)
@@ -76,6 +80,18 @@ public class SwagLabsTest {
         boolean actualRes= driver.findElement
                 (By.xpath("//*[@id=\"continue\"]")).isEnabled();
         Assert.assertEquals(actualRes,expectedRes);
+
+    }
+    @Test(dependsOnMethods = "testCheckout")
+    public void testInfoInCheckOut(){
+        infoPage.validInfo("Tracy","McGrady","37212");
+        infoPage.continueClick();
+
+        boolean expected = true;
+        WebElement finishBtn = driver.findElement(By.id("finish"));
+        boolean actual = finishBtn.isEnabled();
+
+        Assert.assertEquals(actual,expected);
 
     }
 
