@@ -2,7 +2,6 @@ package domaci026.tests;
 
 import domaci026.pages.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -20,6 +19,7 @@ public class SwagLabsTest {
     private CheckoutAndBay checkoutAndBay;
     private InfoPage infoPage;
     private CheckoutOverview checkoutOverview;
+    private LogoutAndCartTest logoutAndCartTest;
 
     @BeforeClass
     public void setup(){
@@ -27,12 +27,14 @@ public class SwagLabsTest {
         driver = new ChromeDriver();
         driverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
+        driver.manage().window().maximize();
 
         loginPage = new LoginPage(driver,driverWait);
         addOnePage = new AddOnePage(driver,driverWait);
         checkoutAndBay = new CheckoutAndBay(driver,driverWait);
         infoPage = new InfoPage(driver,driverWait);
         checkoutOverview = new CheckoutOverview(driver,driverWait);
+        logoutAndCartTest=new LogoutAndCartTest(driver,driverWait);
 
         driver.get("https://www.saucedemo.com");
     }
@@ -113,4 +115,18 @@ public class SwagLabsTest {
 
     }
 
+    @Test(dependsOnMethods ="testCheckoutView" )
+    public void testLogoutCart() {
+
+        logoutAndCartTest.menuClick();
+
+        logoutAndCartTest.logoutClick();
+        logoutAndCartTest.goToCartUrl();
+
+        WebElement errorMessage = driver.findElement(By.xpath("//*[@id=\"login_button_container\"]/div/form/div[3]/h3"));
+        boolean expected = true;
+        boolean actual = errorMessage.isDisplayed();
+        Assert.assertEquals(expected,actual);
+
+    }
     }
