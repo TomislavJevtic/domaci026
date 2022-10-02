@@ -1,9 +1,6 @@
 package domaci026.tests;
 
-import domaci026.pages.AddOnePage;
-import domaci026.pages.CheckoutAndBay;
-import domaci026.pages.InfoPage;
-import domaci026.pages.LoginPage;
+import domaci026.pages.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -22,6 +19,7 @@ public class SwagLabsTest {
     private AddOnePage addOnePage;
     private CheckoutAndBay checkoutAndBay;
     private InfoPage infoPage;
+    private CheckoutOverview checkoutOverview;
 
     @BeforeClass
     public void setup(){
@@ -34,6 +32,7 @@ public class SwagLabsTest {
         addOnePage = new AddOnePage(driver,driverWait);
         checkoutAndBay = new CheckoutAndBay(driver,driverWait);
         infoPage = new InfoPage(driver,driverWait);
+        checkoutOverview = new CheckoutOverview(driver,driverWait);
 
         driver.get("https://www.saucedemo.com");
     }
@@ -92,6 +91,25 @@ public class SwagLabsTest {
         boolean actual = finishBtn.isEnabled();
 
         Assert.assertEquals(actual,expected);
+
+    }
+    @Test(dependsOnMethods ="testInfoInCheckOut" )
+    public void testCheckoutView(){
+        checkoutOverview.getTotalAmount();
+
+        String expectedR="Total: $32.39";
+        String actualR=checkoutOverview.getTotalAmount().getText();
+        System.out.println(actualR);
+        System.out.println(expectedR);
+
+        Assert.assertEquals(expectedR,actualR);
+
+        checkoutOverview.setFinishBtnClick();
+        WebElement successOrder = driver.findElement(By.xpath("//*[@id=\"checkout_complete_container\"]/h2"));
+        String expOrderResult=successOrder.getText();
+        String actualOrderResult = "THANK YOU FOR YOUR ORDER";
+        Assert.assertEquals(expOrderResult,actualOrderResult);
+
 
     }
 
